@@ -1,0 +1,257 @@
+\documentclass[fleqn, 12pt]{article}
+
+% packages %
+\usepackage[includeheadfoot,headheight=15pt,margin=0.5in,left=1in,right=1in,headsep=10pt]{geometry} % page margins %
+\usepackage{mathtools, amssymb} % math %
+\usepackage{tabularx, multirow} % tables %
+\usepackage[outputdir=.latexcache]{minted} % code %
+\usepackage{graphicx} % graphics %
+\usepackage{enumerate} % lists %
+\usepackage{adjustbox} % images %
+\usepackage[T1]{fontenc} % fonts %
+\usepackage[protrusion=true,expansion=true]{microtype} % font clarity %
+\usepackage{fancyhdr} % headers and footers %
+\usepackage{lastpage} % reference page numbers %
+\usepackage{color} % colors for code %
+\usepackage{tikz} % for graphs %
+\usepackage{soul} % for strikethroughout %
+\usepackage{upquote} % Fix single quotes %
+\usepackage{etoolbox} % Conditional checks %
+\usepackage[hidelinks]{hyperref} % Hyperlinks %
+\usepackage{indentfirst} % fix indentation - only for essays %
+\usepackage[figure,table]{totalcount} % For counting tables and figures %
+\usepackage[utf8]{inputenc} % Encode as UTF-8 %
+\usepackage{biblatex} % References %
+\addbibresource{references.bib} % bib source %
+
+% Document details %
+\newcommand{\university}{University of Ottawa}
+\newcommand{\name}{Matthew Langlois}
+\newcommand{\studentNumber}{7731813}
+\newcommand{\semester}{Winter 2018}
+\newcommand{\assignmentType}{Assignment}
+\newcommand{\assignmentNumber}{2}
+\newcommand{\dueDate}{Jan 19, 2018}
+\newcommand{\courseCode}{GNG2101}
+\newcommand{\courseTitle}{Introduction to Product Development}
+\newcommand{\essayTitle}{<Title>} % only for essays %
+\newcommand{\essaySubtitle}{<subtitle>} % only for essays %
+\newcommand{\essayAbstract}{} % Only for essays -- leave empty for no abstract %
+
+% Center image and diagrams %
+\adjustboxset*{center}
+
+% Code settings %
+\setminted{
+    fontfamily=tt,
+    gobble=0,
+    frame=single,
+    funcnamehighlighting=true,
+    tabsize=4,
+    obeytabs=false,
+    mathescape=false
+    samepage=false,
+    showspaces=false,
+    showtabs =false,
+    texcl=false,
+    breaklines=true,
+}
+
+% inline code %
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[2]{\colorbox{codegray}{\mintinline{#1}{#2}}}
+
+% Code from tile %
+\newcommand{\codefile}{\inputminted}
+
+% Graphing stuff %
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
+\usetikzlibrary{automata}
+
+% Define ceiling and floor functions %
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Create set compliment command %
+\newcommand{\setcomp}[1]{{#1}^{\mathsf{c}}}
+
+% Create logic command aliases %
+\newcommand{\limplies}{\rightarrow}
+\newcommand{\nequiv}{\not\equiv}
+\newcommand{\liff}{\leftrightarrow}
+
+% first page header & footer %
+\fancypagestyle{assignment}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \renewcommand{\headrulewidth}{0mm}
+}
+
+% Frontmatter for essay page numbering%
+\fancypagestyle{frontmatter}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{EndFrontMatter}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Essay body page numbering %
+\fancypagestyle{body}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Page header and footers %
+\fancyhf{}
+\renewcommand{\footrulewidth}{0.1mm}
+\fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+\fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+\fancyfoot[L]{\courseCode\text{ }\semester}
+\fancyhead[L]{\name}
+\fancyhead[R]{\studentNumber}
+
+% Apply headers & footer page style %
+\pagestyle{fancy}
+
+% Assignment first page header %
+\newcommand{\beginassignemnt}{
+    % Prevent paragraph indents, this isn't an English assignment! %
+    \newlength\tindent
+    \setlength{\tindent}{\parindent}
+    \setlength{\parindent}{0pt}
+
+    \thispagestyle{assignment}
+    \noindent
+    \courseTitle \hfill \university\\
+    \courseCode \hfill \semester
+    \begin{center}
+        \textbf{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}\\
+        \name \hspace{1pt} - \studentNumber\\
+        \dueDate\\
+    \end{center}
+    \vspace{6pt}
+    \hrule
+    \vspace{1.5\headsep}
+}
+
+% Essay titlepage stuff %
+\newcommand{\beginessay}{
+    % Load all citations %
+    \nocite{*}
+
+    % Special numbering for front matter %
+    \pagestyle{frontmatter}
+    \pagenumbering{roman}
+
+    % Titlepage stuff %
+    \begin{center}
+        \normalsize
+        \textsc{\university}\\[5cm]
+        \LARGE \textbf{\MakeUppercase{\essayTitle}}\\[0.5cm]
+        \large \text{ }\essaySubtitle\text{ }\\[10cm] % blank \texts are used for empty subtitles %
+        \normalsize
+        \textsc{\name}\\
+        \textsc{\studentNumber}\\
+        \textsc{\courseCode}\\
+        \textsc{\semester}\\
+        \textsc{\dueDate}
+    \end{center}
+    \thispagestyle{empty}
+    % End title page stuff %
+
+    % Table of Contents %
+    \newpage
+    \tableofcontents
+    \newpage
+
+    % If more than 1 table/figure show appropriate lists %
+    \iftotalfigures
+        \addcontentsline{toc}{section}{\listfigurename}
+        \listoffigures
+    \fi
+    \iftotaltables
+        \addcontentsline{toc}{section}{\listtablename}
+        \listoftables
+    \fi
+
+    % Display an abstract if the abstract isn't empty %
+    \ifdefempty{\essayAbstract}{}{
+        \newpage
+        \addcontentsline{toc}{section}{Abstract}
+        \begin{abstract}
+            \essayAbstract
+        \end{abstract}
+
+    }
+    \label{EndFrontMatter}
+    \newpage
+
+    % Reset page numbering %
+    \pagenumbering{arabic}
+    \pagestyle{body}
+}
+
+% Update the bibliography command to add its self to the references
+\let\oldprintbib\printbibliography
+\renewcommand{\printbibliography}{
+    \newpage
+    \oldprintbib
+    \addcontentsline{toc}{section}{References}
+    \newpage
+}
+
+% Begin the document %
+\begin{document}
+
+% makes the header for assignment/titlepage for essay %
+% \beginessay
+\beginassignemnt
+
+\section*{Introduction}
+
+The following questions aim to help to help us formulate a proper interview for our client. The questions ensure that we will conduct and ethical interview with the client in mind. We're aiming to get as much information from the client by acting as observers.
+
+\section*{Question 1}
+
+Based on the description of the project we know that our client needs a system to help detect falls in real time. When a patient falls the nurses need to be notified to ensure they are okay. We know that the client wants to keep this project under \$100 as well.
+
+\section*{Question 2}
+
+Based on the description of the project we need to know if the client is capable of wearing a smart watch. For example do they have any requirements based on the materials used? Also smart watches typically link up to a phone, so does our client have a cellphone? Will our client be comfortable wearing a smartwatch to bed, since there is a chance they might fall while getting out of bed.
+
+\section*{Question 3}
+
+Based off of what we've learned in lecture 3 "Customer Empathy" we will be sure to ask questions which allow the customer is able to voice their entire opinion. We will act as observers to really see why they need this product in their life. We will be sure to ask plenty of questions instead of making statement about what we expect the product to do. This will enable us to determine exactly what the client hopes to get from the product.
+
+\section*{Question 4}
+
+\subsection*{Interview Questions}
+
+\begin{enumerate}[1)]
+    \item Why do you think this product will make a difference?
+    \item How do you expect this product to notify you of a fall?
+    \item Who should be notified when a fall occurs?
+    \item Would you be comfertable wearing the device on your arm, for example like a watch?
+    \item Are there any concerns with the materials used?
+    \item What would be a reasonable amount of time for the device to operate before needing to be charged?
+    \item What is a reasonable size for the device?
+    \item What is a reasonable weight for the device?
+    \item Would the device need to be waterproof? For example the ability to wear it while showering?
+    \item Is there anything specific you'd like to have the device perform once a fall has been detected?
+\end{enumerate}
+
+
+\end{document}

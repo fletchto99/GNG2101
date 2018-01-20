@@ -1,0 +1,321 @@
+\documentclass[fleqn, 12pt]{article}
+
+% packages %
+\usepackage[includeheadfoot,headheight=15pt,margin=0.5in,left=1in,right=1in,headsep=10pt]{geometry} % page margins %
+\usepackage{mathtools, amssymb} % math %
+\usepackage{tabularx, multirow} % tables %
+\usepackage[outputdir=.latexcache]{minted} % code %
+\usepackage{graphicx} % graphics %
+\usepackage{enumerate} % lists %
+\usepackage{adjustbox} % images %
+\usepackage[T1]{fontenc} % fonts %
+\usepackage[protrusion=true,expansion=true]{microtype} % font clarity %
+\usepackage{fancyhdr} % headers and footers %
+\usepackage{lastpage} % reference page numbers %
+\usepackage{color} % colors for code %
+\usepackage{tikz} % for graphs %
+\usepackage{soul} % for strikethroughout %
+\usepackage{upquote} % Fix single quotes %
+\usepackage{etoolbox} % Conditional checks %
+\usepackage[hidelinks]{hyperref} % Hyperlinks %
+\usepackage{indentfirst} % fix indentation - only for essays %
+\usepackage[figure,table]{totalcount} % For counting tables and figures %
+\usepackage[utf8]{inputenc} % Encode as UTF-8 %
+\usepackage{biblatex} % References %
+\addbibresource{references.bib} % bib source %
+
+% Document details %
+\newcommand{\university}{University of Ottawa}
+\newcommand{\name}{Matthew Langlois}
+\newcommand{\studentNumber}{7731813}
+\newcommand{\semester}{Winter 2018}
+\newcommand{\assignmentType}{Assignment}
+\newcommand{\assignmentNumber}{1}
+\newcommand{\dueDate}{Jan 17, 2018}
+\newcommand{\courseCode}{GNG2101}
+\newcommand{\courseTitle}{Introduction to Product Development}
+\newcommand{\essayTitle}{<Title>} % only for essays %
+\newcommand{\essaySubtitle}{<subtitle>} % only for essays %
+\newcommand{\essayAbstract}{} % Only for essays -- leave empty for no abstract %
+
+% Center image and diagrams %
+\adjustboxset*{center}
+
+% Code settings %
+\setminted{
+    fontfamily=tt,
+    gobble=0,
+    frame=single,
+    funcnamehighlighting=true,
+    tabsize=4,
+    obeytabs=false,
+    mathescape=false
+    samepage=false,
+    showspaces=false,
+    showtabs =false,
+    texcl=false,
+    breaklines=true,
+}
+
+% inline code %
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[2]{\colorbox{codegray}{\mintinline{#1}{#2}}}
+
+% Code from tile %
+\newcommand{\codefile}{\inputminted}
+
+% Graphing stuff %
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
+\usetikzlibrary{automata}
+
+% Define ceiling and floor functions %
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Create set compliment command %
+\newcommand{\setcomp}[1]{{#1}^{\mathsf{c}}}
+
+% Create logic command aliases %
+\newcommand{\limplies}{\rightarrow}
+\newcommand{\nequiv}{\not\equiv}
+\newcommand{\liff}{\leftrightarrow}
+
+% first page header & footer %
+\fancypagestyle{assignment}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \renewcommand{\headrulewidth}{0mm}
+}
+
+% Frontmatter for essay page numbering%
+\fancypagestyle{frontmatter}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{EndFrontMatter}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Essay body page numbering %
+\fancypagestyle{body}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode\text{ }\semester}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Page header and footers %
+\fancyhf{}
+\renewcommand{\footrulewidth}{0.1mm}
+\fancyfoot[R]{\assignmentType\text{ }\assignmentNumber}
+\fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+\fancyfoot[L]{\courseCode\text{ }\semester}
+\fancyhead[L]{\name}
+\fancyhead[R]{\studentNumber}
+
+% Apply headers & footer page style %
+\pagestyle{fancy}
+
+% Assignment first page header %
+\newcommand{\beginassignemnt}{
+    % Prevent paragraph indents, this isn't an English assignment! %
+    \newlength\tindent
+    \setlength{\tindent}{\parindent}
+    \setlength{\parindent}{0pt}
+
+    \thispagestyle{assignment}
+    \noindent
+    \courseTitle \hfill \university\\
+    \courseCode \hfill \semester
+    \begin{center}
+        \textbf{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}\\
+        \name \hspace{1pt} - \studentNumber\\
+        \dueDate\\
+    \end{center}
+    \vspace{6pt}
+    \hrule
+    \vspace{1.5\headsep}
+}
+
+% Essay titlepage stuff %
+\newcommand{\beginessay}{
+    % Load all citations %
+    \nocite{*}
+
+    % Special numbering for front matter %
+    \pagestyle{frontmatter}
+    \pagenumbering{roman}
+
+    % Titlepage stuff %
+    \begin{center}
+        \normalsize
+        \textsc{\university}\\[5cm]
+        \LARGE \textbf{\MakeUppercase{\essayTitle}}\\[0.5cm]
+        \large \text{ }\essaySubtitle\text{ }\\[10cm] % blank \texts are used for empty subtitles %
+        \normalsize
+        \textsc{\name}\\
+        \textsc{\studentNumber}\\
+        \textsc{\courseCode}\\
+        \textsc{\semester}\\
+        \textsc{\dueDate}
+    \end{center}
+    \thispagestyle{empty}
+    % End title page stuff %
+
+    % Table of Contents %
+    \newpage
+    \tableofcontents
+    \newpage
+
+    % If more than 1 table/figure show appropriate lists %
+    \iftotalfigures
+        \addcontentsline{toc}{section}{\listfigurename}
+        \listoffigures
+    \fi
+    \iftotaltables
+        \addcontentsline{toc}{section}{\listtablename}
+        \listoftables
+    \fi
+
+    % Display an abstract if the abstract isn't empty %
+    \ifdefempty{\essayAbstract}{}{
+        \newpage
+        \addcontentsline{toc}{section}{Abstract}
+        \begin{abstract}
+            \essayAbstract
+        \end{abstract}
+
+    }
+    \label{EndFrontMatter}
+    \newpage
+
+    % Reset page numbering %
+    \pagenumbering{arabic}
+    \pagestyle{body}
+}
+
+% Update the bibliography command to add its self to the references
+\let\oldprintbib\printbibliography
+\renewcommand{\printbibliography}{
+    \newpage
+    \oldprintbib
+    \addcontentsline{toc}{section}{References}
+    \newpage
+}
+
+% Begin the document %
+\begin{document}
+
+% makes the header for assignment/titlepage for essay %
+% \beginessay
+\beginassignemnt
+
+
+\section*{ITP metrics review}
+
+\subsection*{Question 1}
+
+I believe this report somewhat reflects my personality. Like any personality test the questions really don't get to know you as a person so it is very difficult for a quiz which takes 15 minutes to state how you are as a person. I believe the least accurate is the adventurousness part since I usually like to stick within my realm of knowledge. The accurate part is the report's deception of my imagination since I don't really imagine things too often.
+
+\subsection*{Question 2}
+
+I believe my dependability trait stands out for working in teams. If there's a job which needs to be done I'll make sure it gets done properly. This is key for a group project because I don't want to let my team down.
+
+\subsection*{Question 3}
+
+I think the trait which may be the worst is my self-consciousness since I only really like to contribute to the conversation if I know what I'm talking about. I'm not much of a risk taker which can be difficult if I'm not knowledgeable in what the group is discussing.
+
+\subsection*{Question 4}
+
+In terms of working alone I think my frustration trait is beneficial. I don't often get frustrated however this can be harmful if someone in the group is not completing their portion of the work. It can be frustrating if they're not doing their part but I try not to let it show and will likely not do anything about it.
+
+
+\section*{Team Procedures}
+
+\subsection*{Question 1}
+
+I believe the team will find a suitable time to meet on a weekly basis. This shouldn't be too much of an issue to commit to at least 1.5 hours per week.
+
+\subsection*{Question 2}
+
+We will find a way to communicate on line to co-ordinate our off line meetings.
+
+\subsection*{Question 3}
+
+I believe we will try to decide together but worst case we will use majority rules.
+
+\subsection*{Question 4}
+
+For our meetings the agenda will be determined in advance. I believe it would be best to rotate who creates the agenda \& and manages the minutes. During the meeting we will all stick to the agenda to ensure we stay on topic and finish the meetings in a timely fashion.
+
+\subsection*{Question 5}
+
+Minutes and agendas will all be recorded on line, likely in a shared folder on something like Google drive.
+
+\section*{Team Expectations - Work Quality}
+
+\subsection*{Question 1}
+
+To ensure our project meets a certain criteria we will perform peer reviews on all deliverables. If its code then we can use review tools such as GitHub.
+
+\subsection*{Question 2}
+
+One strategy will be to discuss the deliverables at our weekly meetings so we're all able to voice our opinions. Otherwise reviews will be performed on line.
+
+\section*{Team Expectations - Team Participation}
+
+\subsection*{Question 1}
+
+I believe we will be able to equally distribute tasks since we've all got similar knowledge and our project will likely require coding. Thus we can all pick parts we'd like to work on and then collaborate using GitHub.
+
+\subsection*{Question 2}
+
+Make sure everyone has a chance to talk at meetings \& only meet when everyone is available. Also I think it will be important for me to pose questions to the group to prompt conversation and thought.
+
+\subsection*{Question 3}
+
+To ensure we keep on task and get the job done it will be critical for each of us to perform checkups via our preferred communication method.
+
+\subsection*{Question 4}
+
+I think it is important for there to be a leader in the group. This will ensure that the group remains focused and headed in the right direction.
+
+\section*{Team Expectations - Personal Accountability}
+
+\subsection*{Question 1}
+
+I expect that I will remain on task. I've got an extremely busy semester with uOttaHack, Battle Royale, IEEE and SPAC. But between all of these events and my other classes I expect that I will get my tasks done. I hope to not be the leader for this job because I've already taken on too much.
+
+\subsection*{Question 2}
+
+I will do my best to ensure tasks are completed well before the deadline (even though this was late due to CUSEC). This will provide my team time to review all of my submissions to ensure they meet our quality standards.
+
+\subsection*{Question 3}
+
+I expect that my team members will communicate any issues with at least a few days notice this way someone else can pick up their task. Other than that I think communication will be easy on line and we will be able to hold each other accountable at our weekly meetings.
+
+\subsection*{Question 4}
+
+I expect that each team member will equally commit to discussions so that the overall decisions reflect everyone's opinion on the project
+
+\section*{Consequences}
+
+\subsection*{Question 1}
+
+I believe if there are any issues then the member who is causing problems should be notified and confronted as a group. I don't foresee any issues though.
+
+\subsection*{Question 2}
+
+Should the issues continue then it is best that we meet with the prof and possibly lead to this affecting their overall mark.
+
+\end{document}
